@@ -1,4 +1,4 @@
-# Crowdfunding Platform on Tron Blockchain
+# Crowdfunding Platform on Plume Blockchain
 
 Welcome to the Crowdfunding Platform built on the Plume blockchain! This project leverages the Neil testnet to enable users to create and fund campaigns securely and transparently.
 
