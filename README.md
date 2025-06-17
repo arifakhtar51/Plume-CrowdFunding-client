@@ -1,6 +1,6 @@
 # Crowdfunding Platform on Plume Blockchain
 
-Welcome to the Crowdfunding Platform built on the Plume blockchain! This project leverages the Neil testnet to enable users to create and fund campaigns securely and transparently.
+Welcome to the Crowdfunding Platform built on the Plume blockchain! This project leverages the Plume testnet to enable users to create and fund campaigns securely and transparently.
 
 ## Features
 
