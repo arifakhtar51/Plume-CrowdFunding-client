@@ -1,6 +1,6 @@
 # Crowdfunding Platform on Tron Blockchain
 
-Welcome to the Crowdfunding Platform built on the Tron blockchain! This project leverages the Neil testnet to enable users to create and fund campaigns securely and transparently.
+Welcome to the Crowdfunding Platform built on the Plume blockchain! This project leverages the Neil testnet to enable users to create and fund campaigns securely and transparently.
 
 ## Features
 
@@ -11,10 +11,10 @@ Welcome to the Crowdfunding Platform built on the Tron blockchain! This project 
 
 ## Tech Stack
 
-- **Blockchain**: Tron (Neil testnet)
+- **Blockchain**: Plume
 - **Smart Contracts**: Solidity
 - **Frontend**: React.js
-- **Wallet Integration**: TronLink
+- **Wallet Integration**: Metamask
 - **Storage**: IPFS (if used for campaign assets)
 
 ## Installation and Setup
@@ -39,8 +39,8 @@ Welcome to the Crowdfunding Platform built on the Tron blockchain! This project 
    npm install
    ```
 
-3. Deploy smart contracts to Neil testnet:
-   - Configure the TronBox `tronbox-config.js` file with Neil testnet credentials.
+3. Deploy smart contracts to Plume testnet:
+   -
    - Deploy contracts:
      ```bash
      tronbox migrate --network nile
@@ -57,7 +57,7 @@ Welcome to the Crowdfunding Platform built on the Tron blockchain! This project 
 
 ## Usage
 
-1. **Connect Wallet**: Install and connect the TronLink wallet to the Neil testnet.
+1. **Connect Wallet**: Install and connect the Plume wallet.
 2. **Create a Campaign**: Provide the campaign details and submit the form. The campaign data is recorded on the Tron blockchain.
 3. **Fund a Campaign**: Browse campaigns and contribute TRX.
 4. **Track Progress**: View campaign statuses, including funds raised and deadlines.
