@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-function Nav({ checkTronLink, connected, walletAddress }) {
+function Nav({ checkTronLink, connected, walletAddress, disconnectWallet }) {
   console.log(connected, walletAddress)
 
   return (
@@ -9,21 +9,27 @@ function Nav({ checkTronLink, connected, walletAddress }) {
       <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="https://static.wixstatic.com/media/93fed5_7dbfbf436b9244e4bce49ba0a5a1253a~mv2.png/v1/fill/w_560,h_210,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/93fed5_7dbfbf436b9244e4bce49ba0a5a1253a~mv2.png" className="h-8" alt="Flowbite Logo" />
+          
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Ignitus Networks</span>
           </a>
           
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             {connected ? (
               <div className="flex items-center space-x-2">
-              <button 
-                type="button" 
-                className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" 
-                onClick={checkTronLink}
-                disabled={connected}>
-                {walletAddress}
-              </button>
-            </div>
+                <button 
+                  type="button" 
+                  className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" 
+                  onClick={checkTronLink}
+                  disabled={connected}>
+                  {walletAddress}
+                </button>
+                <button 
+                  type="button" 
+                  className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
+                  onClick={disconnectWallet}>
+                  Disconnect
+                </button>
+              </div>
             ) : (
               <button 
                 type="button" 
@@ -32,7 +38,6 @@ function Nav({ checkTronLink, connected, walletAddress }) {
                 Connect Wallet
               </button>
             )}
-
           </div>
 
           <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">

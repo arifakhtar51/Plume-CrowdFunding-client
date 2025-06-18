@@ -15,6 +15,15 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState(null);
 
+  const disconnectWallet = () => {
+    setWalletAddress(null);
+    setContract(null);
+    setConnected(false);
+    toast.info("Wallet disconnected", {
+      position: "top-center",
+    });
+  };
+
   const checkWalletConnection = async () => {
     if (window.ethereum) {
       try {
@@ -116,7 +125,12 @@ function App() {
       <ToastContainer />
       <div className="App font-jersey-25">
         <div className="gradient-bg-welcome">
-          <Nav checkTronLink={onConnect} connected={connected} walletAddress={walletAddress} />
+          <Nav 
+            checkTronLink={onConnect} 
+            connected={connected} 
+            walletAddress={walletAddress} 
+            disconnectWallet={disconnectWallet}
+          />
           {!contract ? (
             <div className='text-white flex items-center justify-center'>Loading...</div>
           ) : (

@@ -152,7 +152,7 @@ function Home({ contract }) {
                 style={{ height: '200px', objectFit: 'cover', width: '100%' }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = 'https://via.placeholder.com/200x200?text=Error+Loading+Image';
+                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJkMzc0OCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=';
                 }}
               />
               <div className="card-body">
@@ -198,22 +198,80 @@ function Home({ contract }) {
   );
 
   return (
-    <div className="container-fluid mt-5">
-      <div className="row">
-        <main role="main" className="col-lg-12 mx-auto" style={{ maxWidth: '1000px' }}>
-          <div className="content mx-auto">
-            <h2 className="text-center mb-4">Open Campaigns</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            {loading ? (
-              <div className="text-center mt-5">
-                <Spinner animation="border" />
-                <p>Loading campaigns...</p>
-              </div>
-            ) : (
-              renderCampaigns(openCampaigns, false)
-            )}
+    <div className="min-h-screen bg-gradient-to-r from-gray-800 to-gray-900">
+      {/* Hero Section */}
+      <div className="text-center py-20 px-4">
+        <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+          Welcome to Ignitus Networks
+        </h1>
+        <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          Ignitus Networks is building a premium pay-per-view platform where creators can upload their videos and get paid each time their videos are watched.
+        </p>
+      </div>
+
+      {/* Campaigns Section */}
+      <div className="container mx-auto px-4 py-8">
+        {error && (
+          <Alert variant="danger" className="mb-4">
+            {error}
+          </Alert>
+        )}
+
+        {loading ? (
+          <div className="text-center py-8">
+            <Spinner animation="border" variant="light" />
           </div>
-        </main>
+        ) : (
+          <Row className="g-4">
+            {openCampaigns.map((campaign) => (
+              <Col key={campaign.id} className="d-flex align-items-stretch">
+                <div className="card custom-card">
+                  <img
+                    className="card-img-top"
+                    src={campaign.image}
+                    alt={campaign.title}
+                    style={{ height: '200px', objectFit: 'cover', width: '100%' }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJkMzc0OCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=';
+                    }}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{campaign.title}</h5>
+                    <p className="card-text">{campaign.description}</p>
+                    <p><strong>Target:</strong> {campaign.target} PLUME</p>
+                    <p><strong>Collected:</strong> {campaign.amountCollected} PLUME</p>
+                    <p><strong>Deadline:</strong> {new Date(campaign.deadline * 1000).toLocaleString()}</p>
+
+                    <ProgressBar
+                      now={calculateProgress(campaign.amountCollected, campaign.target)}
+                      label={`${Math.round(calculateProgress(campaign.amountCollected, campaign.target))}%`}
+                      variant="success"
+                    />
+
+                    <Form.Control
+                      type="number"
+                      placeholder="Enter donation amount"
+                      value={donationAmounts[campaign.id] || ''}
+                      onChange={(e) => handleDonationChange(campaign.id, e.target.value)}
+                      className="mb-3 mt-3"
+                      min="0"
+                      step="0.1"
+                    />
+                    <Button
+                      onClick={() => donateToCampaign(campaign.id)}
+                      variant="primary"
+                      className="w-100"
+                      disabled={isDonating}
+                    >
+                      {isDonating ? 'Donating...' : "Donate"}
+                    </Button>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        )}
       </div>
     </div>
   );

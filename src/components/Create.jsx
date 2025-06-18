@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Row } from 'react-bootstrap';
+import { Button, Form, Row, Alert } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 import axios from 'axios';
@@ -12,9 +12,15 @@ const pinata = new PinataSDK({
   pinataGateway: "beige-sophisticated-baboon-74.mypinata.cloud",
 })
 
+// Plume Testnet chain ID
+const PLUME_TESTNET_CHAIN_IDS = ['0x18233', '98867', '0x18233'];
+
+const PLUME_TESTNET_NAME = 'Plume Testnet';
+
 const Create = ({ contract }) => {
   const [processing, setProcessing] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [isCorrectNetwork, setIsCorrectNetwork] = useState(false);
   const [formInfo, setFormInfo] = useState({
     title: "",
     description: "",
@@ -22,6 +28,42 @@ const Create = ({ contract }) => {
     deadline: 0,
     imageHash: "" 
   });
+
+  useEffect(() => {
+    checkNetwork();
+    // Listen for network changes
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', checkNetwork);
+    }
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('chainChanged', checkNetwork);
+      }
+    };
+  }, []);
+
+  const checkNetwork = async () => {
+    if (!window.ethereum) {
+      console.log('No ethereum provider found');
+      setIsCorrectNetwork(false);
+      return;
+    }
+
+    try {
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+      console.log('Current chain ID:', chainId);
+      console.log('Expected chain IDs:', PLUME_TESTNET_CHAIN_IDS);
+      
+      // Check if the chainId matches any of the possible formats
+      const isPlumeNetwork = PLUME_TESTNET_CHAIN_IDS.includes(chainId);
+      console.log('Is Plume network:', isPlumeNetwork);
+      
+      setIsCorrectNetwork(isPlumeNetwork);
+    } catch (error) {
+      console.error('Error checking network:', error);
+      setIsCorrectNetwork(false);
+    }
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -54,7 +96,8 @@ const Create = ({ contract }) => {
         ...prevState,
         imageHash: `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${response.IpfsHash}`,
       }));
-      toast.success('Image uploaded successfully', { position: "top-center" });
+      // toast.success('Image uploaded successfully', { position: "top-center" });
+
     } catch (error) {
       console.error("Image upload failed", error);
       toast.error('Failed to upload image', { position: "top-center" });
@@ -121,7 +164,7 @@ const Create = ({ contract }) => {
       // Wait for transaction confirmation
       const receipt = await tx.wait();
       console.log("Transaction confirmed:", receipt);
-
+      toast.success('Image uploaded successfully', { position: "top-center" });
       toast.success("Campaign created successfully!", { position: "top-center" });
       
       // Reset form
@@ -157,6 +200,16 @@ const Create = ({ contract }) => {
       <main className="container mx-auto px-6 py-8">
         <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-white mb-6 text-center">Create Campaign</h2>
+          
+          {!isCorrectNetwork && (
+            <Alert variant="warning" className="mb-4">
+              <Alert.Heading>Please Connect to Plume Testnet</Alert.Heading>
+              <p>
+                This application requires the Plume Testnet to function. Please switch your network to Plume Testnet to create campaigns.
+              </p>
+            </Alert>
+          )}
+
           <Row className="g-4">
             <Form.Group className="mb-3">
               <Form.Label className="text-white">Upload Image</Form.Label>
@@ -164,6 +217,7 @@ const Create = ({ contract }) => {
                 type="file"
                 onChange={(e) => handleImageUpload(e.target.files[0])}
                 className="w-full p-3 my-2 bg-gray-700 text-white rounded-lg"
+                disabled={!isCorrectNetwork}
               />
             </Form.Group>
             <Form.Control
@@ -173,6 +227,7 @@ const Create = ({ contract }) => {
               type="text"
               placeholder="Title"
               className="w-full p-3 my-2 bg-gray-700 text-white rounded-lg"
+              disabled={!isCorrectNetwork}
             />
             <Form.Control
               onChange={handleChange}
@@ -181,6 +236,7 @@ const Create = ({ contract }) => {
               as="textarea"
               placeholder="Description"
               className="w-full p-3 my-2 bg-gray-700 text-white rounded-lg"
+              disabled={!isCorrectNetwork}
             />
             <div>
               <label className="text-white mb-2 block">Target Amount (PLUME)</label>
@@ -191,6 +247,7 @@ const Create = ({ contract }) => {
                 type="number"
                 placeholder="Target Amount"
                 className="w-full p-3 my-2 bg-gray-700 text-white rounded-lg"
+                disabled={!isCorrectNetwork}
               />
             </div>
             <div>
@@ -202,6 +259,7 @@ const Create = ({ contract }) => {
                 type="datetime-local"
                 placeholder="Deadline"
                 className="w-full p-3 my-2 bg-gray-700 text-white rounded-lg"
+                disabled={!isCorrectNetwork}
               />
             </div>
             <div className="flex justify-center mt-6">
@@ -209,7 +267,7 @@ const Create = ({ contract }) => {
                 onClick={handleSubmit}
                 variant="primary"
                 size="lg"
-                disabled={processing}
+                disabled={processing || !isCorrectNetwork}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500"
               >
                 {processing ? 'Creating...' : 'Create Campaign'}
